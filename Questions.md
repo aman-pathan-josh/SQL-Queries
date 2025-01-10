@@ -75,12 +75,13 @@ WHERE orders.shipped_date is not null;
 ```
 8) Create a report that shows the total quantity of products ordered fewer than 200.
 ```sql
-SELECT products.product_id AS ProductID, products.product_name AS ProductName, SUM(products.product_id) AS TotalQuantity
+SELECT products.product_id AS ProductID, products.product_name AS ProductName, 
+SUM(order_details.quantity) AS TotalQuantity
 FROM order_details
-JOIN products
+INNER JOIN products
 ON order_details.product_id = products.product_id
 GROUP BY products.product_id, products.product_name
-HAVING SUM(order_details.quantity) < 200
+HAVING COUNT(order_details.product_id) < 200
 ORDER BY TotalQuantity ASC;
 ```
 9) Create a report that shows the total number of orders by Customer since December 31, 1996 and the NumOfOrders is greater than 15.
@@ -96,6 +97,7 @@ ORDER BY TotalOrders ASC;
 ```
 10) Create a report that shows the company name, order id, and total price of all products of which Northwind has sold more than $10,000 worth.
 ```sql
+
 ```       
 11) Create a report showing the Order ID, the name of the company that placed the order,
    and the first and last name of the associated employee. Only show orders placed after January 1, 1998  hat shipped after they were required. Sort by Company Name.
@@ -103,76 +105,187 @@ ORDER BY TotalOrders ASC;
 ```
 12)  Get the phone numbers of all shippers, customers, and suppliers.
 ```sql
+SELECT customers.phone AS CustomersPhone, suppliers.phone AS SuppliersPhone, shippers.phone AS ShippersPhone
+FROM customers, suppliers, shippers;
 ```
 13) Create a report showing the contact name and phone numbers for all employees,customers, and suppliers.
 ```sql
+SELECT CONCAT(employees.first_name, ' ', employees.last_name) AS EmployeeName, employees.home_phone AS EmployeePhone,
+		customers.contact_name AS CustomerName, customers.phone AS CustomerPhone,
+		suppliers.contact_name AS SupplierName, suppliers.phone AS SupplierPhone
+FROM customers, employees, suppliers;
 ```
 14) Fetch all the orders for a given customers phone number 030 0074321.
 ```sql
+SELECT * FROM order_details WHERE order_id IN (SELECT orders.order_id FROM orders 
+WHERE customer_id = (SELECT customers.customer_id FROM customers
+WHERE customers.phone = '030-0074321'));
 ```
 15) Fetch all the products which are available under Category Seafood.
 ```sql
+SELECT products.product_id, products.product_name 
+FROM products
+JOIN categories
+ON products.category_id = categories.category_id
+WHERE categories.category_name = 'Seafood'
+GROUP BY products.product_id,products.product_name;
 ```
 16) Fetch all the products which are supplied by a company called Pavlova, Ltd.
 ```sql
+SELECT products.product_id, products.product_name
+FROM products
+JOIN suppliers
+ON products.supplier_id = suppliers.supplier_id
+WHERE suppliers.company_name = 'Pavlova, Ltd.'
+GROUP BY products.product_id, products.product_name;
 ```
 17) All orders placed by the customers belong to London city.
-
 ```sql
+SELECT customers.contact_name, orders.order_id 
+FROM orders
+INNER JOIN customers
+ON orders.customer_id = customers.customer_id
+WHERE customers.city = 'London'
+GROUP BY orders.order_id,customers.contact_name;
 ```
 18) All orders placed by the customers not belong to London city.
 ```sql
+SELECT customers.contact_name, orders.order_id 
+FROM orders
+INNER JOIN customers
+ON orders.customer_id = customers.customer_id
+WHERE customers.city != 'London'
+GROUP BY orders.order_id,customers.contact_name;
 ```
 20) Find the name of the company that placed order 10290.
 ```sql
+SELECT customers.company_name
+FROM customers
+INNER JOIN orders
+ON customers.customer_id = orders.customer_id
+WHERE orders.order_id = 10290
+GROUP BY customers.company_name;
+
 ```
 21) Find the Companies that placed orders in 1997
 ```sql
+SELECT customers.company_name AS CompanyName
+FROM customers
+INNER JOIN orders
+ON customers.customer_id = orders.customer_id
+WHERE EXTRACT(YEAR FROM order_date) = 1997
+GROUP BY customers.company_name;
 ```
 22) Get the product name , count of orders processed
 ```sql
+SELECT products.product_name AS ProductName, COUNT(order_details.order_id) AS OrdersProcessed
+FROM products
+INNER JOIN order_details
+ON products.product_id = order_details.product_id
+GROUP BY products.product_name;
 ```
 23) Get the top 3 products which has more orders
 ```sql
+SELECT products.product_name AS ProductName, COUNT(order_details.order_id) AS OrdersProcessed
+FROM products
+INNER JOIN order_details
+ON products.product_id = order_details.product_id
+GROUP BY products.product_name
+ORDER BY OrdersProcessed DESC
+LIMIT 3;
 ```
 24) Get the list of employees who processed the order chai
 ```sql
+SELECT DISTINCT CONCAT(employees.first_name, ' ', employees.last_name) AS EmployeeName
+FROM employees
+INNER JOIN orders ON employees.employee_id = orders.employee_id
+INNER JOIN order_details ON order_details.order_id = orders.order_id
+INNER JOIN products ON products.product_id = order_details.product_id
+WHERE products.product_name = 'Chai';
 ```
 25) Get the shipper company who processed the order categories Seafood.
 ```sql
+SELECT DISTINCT shippers.shipper_id, shippers.company_name
+FROM shippers
+INNER JOIN orders ON shippers.shipper_id = orders.ship_via
+INNER JOIN order_details ON order_details.order_id = orders.order_id
+INNER JOIN products ON products.product_id = order_details.product_id
+INNER JOIN categories ON categories.category_id = products.category_id
+WHERE categories.category_name = 'Seafood';
 ```
 26) Get category name , count of orders processed by the USA employees
 ```sql
+SELECT categories.category_id, categories.category_name, COUNT(orders.employee_id)
+FROM orders
+INNER JOIN employees ON employees.employee_id = orders.employee_id
+INNER JOIN order_details ON order_details.order_id = orders.order_id
+INNER JOIN products ON products .product_id = order_details.product_id
+INNER JOIN categories  ON categories.category_id = products.category_id
+WHERE employees.country = 'USA'
+GROUP BY categories.category_id, categories.category_name;
 ```
 27) Select CategoryName and Description from the Categories table sorted by CategoryName.
 ```sql
+SELECT category_name AS CategoryName, description AS Description
+FROM categories 
+ORDER BY category_name;
 ```
 28) Select ContactName, CompanyName, ContactTitle, and Phone from the Customers table sorted byPhone.
 ```sql
+SELECT contact_name AS ContactName, company_name AS CompanyName,
+contact_title AS ContactTitle, phone AS Phone
+FROM customers
+ORDER BY phone;
 ```
 29) Create a report showing employees' first and last names and hire dates sorted from newest to oldest employee.
 ```sql
+SELECT CONCAT(first_name, ' ', last_name) AS Employee_Name, hire_date AS HireDate
+FROM employees
+ORDER BY hire_date DESC;
 ```
 30) Create a report showing Northwind's orders sorted by Freight from most expensive to cheapest. Show OrderID, OrderDate, ShippedDate, CustomerID, and Freight.
 ```sql
+SELECT order_id AS OrderID, order_date AS OrderDate, shipped_date AS ShippedDate, 
+customer_id AS Freight, freight AS Freight
+FROM orders 
+ORDER BY freight DESC;
 ```
 31) Select CompanyName, Fax, Phone, HomePage and Country from the Suppliers table sorted by Country in descending order and then by CompanyName in ascending order
 ```sql
+SELECT company_name, fax,homepage, country
+FROM suppliers
+ORDER BY country DESC,company_name ASC;
 ```
 32) Create a report showing all the company names and contact names of Northwind's customers in Buenos Aires.
 ```sql
+SELECT company_name, contact_name
+FROM customers 
+WHERE city = 'Buenos Aires';
 ```
 33) Create a report showing the product name, unit price and quantity per unit of all products that are out of stock.
 ```sql
+SELECT product_name, unit_price, quantity_per_unit
+FROM products
+WHERE units_in_stock = 0;
 ```
 34) Create a report showing the order date, shipped date, customer id, and freight of all orders placed on May 19, 1997.
 ```sql
+SELECT order_date, shipped_date, customer_id, freight
+FROM orders
+WHERE order_date = DATE '1997-05-19';
 ```
 35) Create a report showing the first name, last name, and country of all employees not in the United States.
 ```sql
+SELECT first_name, last_name, country
+FROM employees
+WHERE country != 'USA';
 ```
 36) Create a report that shows the city, company name, and contact name of all customers who are in cities that begin with "A" or "B."
 ```sql
+SELECT contact_name, company_name, city
+FROM customers
+WHERE city LIKE 'A%' OR city LIKE 'B%'
+ORDER BY city;
 ```
 37) Create a report that shows all orders that have a freight cost of more than $500.00.
 ```sql

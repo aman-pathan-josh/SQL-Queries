@@ -157,7 +157,7 @@ ON orders.customer_id = customers.customer_id
 WHERE customers.city != 'London'
 GROUP BY orders.order_id,customers.contact_name;
 ```
-20) Find the name of the company that placed order 10290.
+19) Find the name of the company that placed order 10290.
 ```sql
 SELECT customers.company_name
 FROM customers
@@ -165,9 +165,8 @@ INNER JOIN orders
 ON customers.customer_id = orders.customer_id
 WHERE orders.order_id = 10290
 GROUP BY customers.company_name;
-
 ```
-21) Find the Companies that placed orders in 1997
+20) Find the Companies that placed orders in 1997
 ```sql
 SELECT customers.company_name AS CompanyName
 FROM customers
@@ -176,7 +175,7 @@ ON customers.customer_id = orders.customer_id
 WHERE EXTRACT(YEAR FROM order_date) = 1997
 GROUP BY customers.company_name;
 ```
-22) Get the product name , count of orders processed
+21) Get the product name , count of orders processed
 ```sql
 SELECT products.product_name AS ProductName, COUNT(order_details.order_id) AS OrdersProcessed
 FROM products
@@ -184,7 +183,7 @@ INNER JOIN order_details
 ON products.product_id = order_details.product_id
 GROUP BY products.product_name;
 ```
-23) Get the top 3 products which has more orders
+22) Get the top 3 products which has more orders
 ```sql
 SELECT products.product_name AS ProductName, COUNT(order_details.order_id) AS OrdersProcessed
 FROM products
@@ -194,7 +193,7 @@ GROUP BY products.product_name
 ORDER BY OrdersProcessed DESC
 LIMIT 3;
 ```
-24) Get the list of employees who processed the order chai
+23) Get the list of employees who processed the order chai
 ```sql
 SELECT DISTINCT CONCAT(employees.first_name, ' ', employees.last_name) AS EmployeeName
 FROM employees
@@ -203,7 +202,7 @@ INNER JOIN order_details ON order_details.order_id = orders.order_id
 INNER JOIN products ON products.product_id = order_details.product_id
 WHERE products.product_name = 'Chai';
 ```
-25) Get the shipper company who processed the order categories Seafood.
+24) Get the shipper company who processed the order categories Seafood.
 ```sql
 SELECT DISTINCT shippers.shipper_id, shippers.company_name
 FROM shippers
@@ -213,7 +212,7 @@ INNER JOIN products ON products.product_id = order_details.product_id
 INNER JOIN categories ON categories.category_id = products.category_id
 WHERE categories.category_name = 'Seafood';
 ```
-26) Get category name , count of orders processed by the USA employees
+25) Get category name , count of orders processed by the USA employees
 ```sql
 SELECT categories.category_id, categories.category_name, COUNT(orders.employee_id)
 FROM orders
@@ -224,100 +223,129 @@ INNER JOIN categories  ON categories.category_id = products.category_id
 WHERE employees.country = 'USA'
 GROUP BY categories.category_id, categories.category_name;
 ```
-27) Select CategoryName and Description from the Categories table sorted by CategoryName.
+26) Select CategoryName and Description from the Categories table sorted by CategoryName.
 ```sql
 SELECT category_name AS CategoryName, description AS Description
 FROM categories 
 ORDER BY category_name;
 ```
-28) Select ContactName, CompanyName, ContactTitle, and Phone from the Customers table sorted byPhone.
+27) Select ContactName, CompanyName, ContactTitle, and Phone from the Customers table sorted byPhone.
 ```sql
 SELECT contact_name AS ContactName, company_name AS CompanyName,
 contact_title AS ContactTitle, phone AS Phone
 FROM customers
 ORDER BY phone;
 ```
-29) Create a report showing employees' first and last names and hire dates sorted from newest to oldest employee.
+28) Create a report showing employees' first and last names and hire dates sorted from newest to oldest employee.
 ```sql
 SELECT CONCAT(first_name, ' ', last_name) AS Employee_Name, hire_date AS HireDate
 FROM employees
 ORDER BY hire_date DESC;
 ```
-30) Create a report showing Northwind's orders sorted by Freight from most expensive to cheapest. Show OrderID, OrderDate, ShippedDate, CustomerID, and Freight.
+29) Create a report showing Northwind's orders sorted by Freight from most expensive to cheapest. Show OrderID, OrderDate, ShippedDate, CustomerID, and Freight.
 ```sql
 SELECT order_id AS OrderID, order_date AS OrderDate, shipped_date AS ShippedDate, 
 customer_id AS Freight, freight AS Freight
 FROM orders 
 ORDER BY freight DESC;
 ```
-31) Select CompanyName, Fax, Phone, HomePage and Country from the Suppliers table sorted by Country in descending order and then by CompanyName in ascending order
+30) Select CompanyName, Fax, Phone, HomePage and Country from the Suppliers table sorted by Country in descending order and then by CompanyName in ascending order
 ```sql
 SELECT company_name, fax,homepage, country
 FROM suppliers
 ORDER BY country DESC,company_name ASC;
 ```
-32) Create a report showing all the company names and contact names of Northwind's customers in Buenos Aires.
+31) Create a report showing all the company names and contact names of Northwind's customers in Buenos Aires.
 ```sql
 SELECT company_name, contact_name
 FROM customers 
 WHERE city = 'Buenos Aires';
 ```
-33) Create a report showing the product name, unit price and quantity per unit of all products that are out of stock.
+32) Create a report showing the product name, unit price and quantity per unit of all products that are out of stock.
 ```sql
 SELECT product_name, unit_price, quantity_per_unit
 FROM products
 WHERE units_in_stock = 0;
 ```
-34) Create a report showing the order date, shipped date, customer id, and freight of all orders placed on May 19, 1997.
+33) Create a report showing the order date, shipped date, customer id, and freight of all orders placed on May 19, 1997.
 ```sql
 SELECT order_date, shipped_date, customer_id, freight
 FROM orders
 WHERE order_date = DATE '1997-05-19';
 ```
-35) Create a report showing the first name, last name, and country of all employees not in the United States.
+34) Create a report showing the first name, last name, and country of all employees not in the United States.
 ```sql
 SELECT first_name, last_name, country
 FROM employees
 WHERE country != 'USA';
 ```
-36) Create a report that shows the city, company name, and contact name of all customers who are in cities that begin with "A" or "B."
+35) Create a report that shows the city, company name, and contact name of all customers who are in cities that begin with "A" or "B."
 ```sql
 SELECT contact_name, company_name, city
 FROM customers
 WHERE city LIKE 'A%' OR city LIKE 'B%'
 ORDER BY city;
 ```
-37) Create a report that shows all orders that have a freight cost of more than $500.00.
+36) Create a report that shows all orders that have a freight cost of more than $500.00.
 ```sql
 SELECT order_id
 FROM orders 
 WHERE freight > 500;
 ```
-38) Create a report that shows the product name, units in stock, units on order, and reorder level of all
+37) Create a report that shows the product name, units in stock, units on order, and reorder level of all
 products that are up for reorder.
 ```sql
+SELECT product_name, units_in_stock, units_on_order, reorder_level
+FROM products;
 ```
-39) Create a report that shows the company name, contact name and fax number of all customers that have a fax number.
+38) Create a report that shows the company name, contact name and fax number of all customers that have a fax number.
 ```sql
+SELECT company_name, contact_name, fax
+FROM customers 
+WHERE fax IS NOT NULL;
 ```
-40) Create a report that shows the first and last name of all employees who do not report to anybody.
+39) Create a report that shows the first and last name of all employees who do not report to anybody.
 ```sql
+SELECT first_name, last_name 
+FROM employees
+WHERE reports_to IS NULL;
 ```
-41) Create a report that shows the company name, contact name and fax number of all customers that have a fax number, Sort by company name.
+40) Create a report that shows the company name, contact name and fax number of all customers that have a fax number, Sort by company name.
 ```sql
+SELECT company_name, contact_name, fax
+FROM customers 
+WHERE fax IS NOT NULL
+ORDER BY company_name;
 ```
-42) Create a report that shows the city, company name, and contact name of all customers who are in cities that begin with "A" or "B." Sort by contact name in descending order.
+41) Create a report that shows the city, company name, and contact name of all customers who are in cities that begin with "A" or "B." Sort by contact name in descending order.
 ```sql
+SELECT company_name, contact_name, city, contact_name
+FROM customers 
+WHERE city LIKE 'A%' OR city LIKE 'B%'
+ORDER BY contact_name DESC;
 ```
-43) Create a report that shows the first and last names and birth date of all employees born in the 1950s
+42) Create a report that shows the first and last names and birth date of all employees born in the 1950s
 ```sql
+SELECT first_name, last_name, birth_date
+FROM employees
+WHERE EXTRACT(YEAR FROM birth_date) BETWEEN 1949 AND 1959;
 ```
-44) Create a report that shows the shipping postal code, order id, and order date for all orders with a ship postal code beginning with "02389".
+43) Create a report that shows the shipping postal code, order id, and order date for all orders with a ship postal code beginning with "02389".
 ```sql
+SELECT order_id, order_date, ship_postal_code
+FROM orders
+WHERE ship_postal_code LIKE '02389%';
 ```
-45) Create a report that shows the contact name and title and the company name for all customers whose contact title does not contain the word "Sales".
+44) Create a report that shows the contact name and title and the company name for all customers whose contact title does not contain the word "Sales".
 ```sql
+SELECT contact_name, contact_title, company_name
+FROM customers
+WHERE contact_title NOT IN (SELECT contact_title FROM customers WHERE contact_title LIKE '%Sales%');
+
 ```
-46) Create a report that shows the first and last names and cities of employees from cities other than Seattle in the state of Washington.
+45) Create a report that shows the first and last names and cities of employees from cities other than Seattle in the state of Washington.
 ```sql
+SELECT first_name, last_name, city 
+FROM employees
+WHERE city != 'Seattle' AND country != 'Washington';
 ```

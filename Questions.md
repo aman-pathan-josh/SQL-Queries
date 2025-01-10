@@ -289,6 +289,9 @@ ORDER BY city;
 ```
 37) Create a report that shows all orders that have a freight cost of more than $500.00.
 ```sql
+SELECT order_id
+FROM orders 
+WHERE freight > 500;
 ```
 38) Create a report that shows the product name, units in stock, units on order, and reorder level of all
 products that are up for reorder.
